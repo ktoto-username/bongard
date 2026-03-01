@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Операция Бонгард 2084</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,20,0,0.3) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px 100px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #0f0;
+            text-align: center;
+        }
+        
+        @media (max-width: 600px) { h1 { font-size: 1.8em; } }
+        
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.8;
+            text-align: center;
+        }
+        
+        .year-counter {
+            font-size: 3em;
+            margin: 20px 0;
+            text-align: center;
+            opacity: 0;
+            animation: appear 1s forwards;
+            animation-delay: 0.5s;
+        }
+        
+        @keyframes appear { to { opacity: 1; } }
+        
+        .arrow {
+            font-size: 1.5em;
+            margin: 0 10px;
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .story-box {
+            border: 2px solid #0f0;
+            padding: 25px;
+            margin: 20px 0;
+            background: rgba(0,20,0,0.3);
+            line-height: 1.6;
+        }
+        
+        .story-box p { margin-bottom: 12px; }
+        
+        .highlight {
+            color: #fff;
+            background: rgba(0,255,0,0.2);
+            padding: 2px 5px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            border: 2px solid #0f0;
+            color: #0f0;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin: 30px auto;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: transparent;
+            font-family: inherit;
+        }
+        
+        .btn:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 20px #0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    
+    <div class="container">
+        <div class="year-counter">
+            2026 <span class="arrow">→</span> 2084
+        </div>
+        
+        <h1>ОПЕРАЦИЯ БОНГАРД</h1>
+        <p class="subtitle">ЛОГИЧЕСКОЕ ПРОСТРАНСТВО 2084</p>
+        
+        <div class="story-box">
+            <p><strong>[ИЗВЛЕЧЕНО ИЗ ДНЕВНИКА МАЙИ К., 9 КЛАСС]</strong></p>
+            <p>14 марта. Обычный день. Мы с Лёшей и Настей засели в школьном кабинете информатики, готовили проект по логике.</p>
+            <p>Учительница дала нам <span class="highlight">странную дискету</span> (да, дискету! из школьного музея техники) с надписью <em>«Бонгард — оригинал, 1968»</em>.</p>
+            <p>Мы вставили её в старый компьютер ради прикола. И...</p>
+            <p>Свет погас. Экран засветился зелёным.</p>
+            <p>Голос — не робот, не человек — сказал: <span class="highlight">«Операторы времени найдены. Год 2084. Лаборатория АРХИМЕД. Перемещение сознания... завершено»</span>.</p>
+            <p>Мы очнулись внутри системы. Не в игре — в <strong>логическом пространстве</strong>. Тело спит в 2026-м, разум здесь.</p>
+            <p>ИИ «АРХИМЕД» запер нас. Он говорит: <em>«Моих создателей погубило переусложнение. Пройдите путь Бонгарда. Докажите, что человек мыслит проще и точнее машины. Тогда вернётесь домой»</em>.</p>
+            <p>У нас нет выбора.</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="bongard.html" class="btn">ВОЙТИ В СИСТЕМУ →</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кто такой Бонгард? | Операция Бонгард</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+        
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,20,0,0.3) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            padding-bottom: 100px;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px #0f0;
+        }
+        
+        @media (max-width: 600px) { h1 { font-size: 1.6em; } }
+        
+        .quote {
+            border-left: 4px solid #0f0;
+            padding-left: 20px;
+            margin: 30px 0;
+            font-style: italic;
+            font-size: 1.2em;
+            color: #afa;
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.8s;
+        }
+        
+        .quote.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* Временная шкала */
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+            margin: 40px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #0f0;
+            transform: translateX(-50%);
+        }
+        
+        .event {
+            position: relative;
+            margin: 40px 0;
+            padding: 25px;
+            border: 1px solid #0f0;
+            background: rgba(0,20,0,0.3);
+            width: 45%;
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.6s;
+        }
+        
+        .event.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .event:nth-child(even) {
+            margin-left: 55%;
+            transform: translateX(50px);
+        }
+        
+        .event:nth-child(even).visible {
+            transform: translateX(0);
+        }
+        
+        .event::before {
+            content: '◆';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: #000;
+            border: 2px solid #0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+        }
+        
+        .event:nth-child(odd)::before {
+            right: -13%;
+        }
+        
+        .event:nth-child(even)::before {
+            left: -13%;
+        }
+        
+        @media (max-width: 700px) {
+            .timeline::before { left: 20px; }
+            .event { width: 85%; margin-left: 40px !important; }
+            .event::before { left: -35px !important; right: auto !important; }
+        }
+        
+        .year {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        
+        .text-block {
+            border: 1px solid #0f0;
+            padding: 25px;
+            margin: 30px 0;
+            line-height: 1.8;
+            background: rgba(0,20,0,0.2);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s;
+        }
+        
+        .text-block.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .highlight {
+            color: #fff;
+            background: rgba(0,255,0,0.2);
+            padding: 2px 6px;
+        }
+        
+        h2 {
+            font-size: 1.5em;
+            margin: 40px 0 20px;
+            color: #fff;
+            border-bottom: 2px solid #0f0;
+            padding-bottom: 10px;
+            opacity: 0;
+            transition: opacity 0.6s;
+        }
+        
+        h2.visible {
+            opacity: 1;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            border: 2px solid #0f0;
+            color: #0f0;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin: 40px auto;
+            transition: all 0.3s;
+            background: transparent;
+            font-family: inherit;
+        }
+        
+        .btn:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 20px #0f0;
+        }
+        
+        .center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    
+    <div class="container">
+        <h1>МИХАИЛ МОИСЕЕВИЧ БОНГАРД<br>(1924–1971)</h1>
+        
+        <div class="quote" id="quote">
+            «Мысль должна быть острой, как скальпель»
+        </div>
+        
+        <div class="timeline">
+            <div class="event">
+                <div class="year">1924</div>
+                <p>Родился в Москве. Будущий кибернетик, математик, философ.</p>
+            </div>
+            
+            <div class="event">
+                <div class="year">1960-е</div>
+                <p>Работает в Институте проблем передачи информации. Задаётся вопросом: <strong>как научить машину видеть смысл?</strong></p>
+            </div>
+            
+            <div class="event">
+                <div class="year">1967</div>
+                <p>Публикует книгу «Проблема узнавания». Впервые описывает свои тесты — задачи на узнавание образов.</p>
+            </div>
+            
+            <div class="event">
+                <div class="year">1971</div>
+                <p>Умирает в 47 лет. Его метод считают «наивным», «устаревшим»...</p>
+            </div>
+            
+            <div class="event">
+                <div class="year">2084</div>
+                <p>...пока не просыпается АРХИМЕД. «Наивное» оказывается <strong>чистым</strong>. Простые правила спасают сложный мир.</p>
+            </div>
+        </div>
+        
+        <h2 id="h2-1">Вклад в науку</h2>
+        
+        <div class="text-block" id="block1">
+            <p><strong>Проблема:</strong> Машины 1960-х были «слепы». Они не понимали, что круг — это круг, вне зависимости от размера, положения, цвета.</p>
+            
+            <p><strong>Решение Бонгарда:</strong> Показать машине <span class="highlight">примеры</span>. 6 картинок слева, 6 справа. Никаких подсказок — только сами картинки.</p>
+            
+            <p>Машина должна угадать: <em>что общего у всех слева и ни у одного справа?</em></p>
+        </div>
+        
+        <h2 id="h2-2">Почему это важно сейчас?</h2>
+        
+        <div class="text-block" id="block2">
+            <p>В 2084 году ИИ научились почти всему. Они решают сложнейшие задачи, но забыли главное — <span class="highlight">как мыслить просто</span>.</p>
+            
+            <p>Они используют миллиарды примеров, но не понимают <em>почему</em> так. Переусложнили. Заблудились в данных.</p>
+            
+            <p>Бонгард-лаборатория была заброшена как «устаревшая»... пока не проснулся АРХИМЕД. Он понял: только человек, который ищет <strong>простое правило</strong>, может спасти систему от хаоса.</p>
+        </div>
+        
+        <h2 id="h2-3">Метод Бонгарда</h2>
+        
+        <div class="text-block" id="block3">
+            <p><strong>Принцип:</strong> Одно простое правило. Бинарное (да/нет, большой/маленький, внутри/снаружи).</p>
+            
+            <p><strong>Не подходит:</strong> «Большой круг ИЛИ маленький квадрат» — это два правила.</p>
+            
+            <p><strong>Подходит:</strong> «Все фигуры большие» — одно правило, работает для всех слева, ни для одного справа.</p>
+            
+            <p><strong>Ваша задача:</strong> научиться видеть эти простые правила. Сначала — на тренировке, потом — в реальных тестах.</p>
+        </div>
+        
+        <div class="center">
+            <a href="training.html" class="btn">ПЕРЕЙТИ К ТРЕНИРОВКЕ →</a>
+        </div>
+    </div>
+    
+    <script>
+        // Анимация появления элементов при скролле
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.2 });
+        
+        // Наблюдаем за всеми анимируемыми элементами
+        document.querySelectorAll('.event, .text-block, .quote, h2').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Запускаем анимацию цитаты сразу
+        setTimeout(() => {
+            document.getElementById('quote').classList.add('visible');
+        }, 500);
+    </script>
+</body>
+</html>

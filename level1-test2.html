@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест 2 | Уровень 1 | Операция Бонгард</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+        
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,20,0,0.3) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            padding-bottom: 100px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .level-indicator {
+            font-size: 1.2em;
+            opacity: 0.7;
+            margin-bottom: 10px;
+        }
+        
+        h1 {
+            font-size: 2em;
+            text-shadow: 0 0 20px #0f0;
+        }
+        
+        @media (max-width: 600px) { h1 { font-size: 1.5em; } }
+        
+        .archimed-message {
+            border: 2px solid #0f0;
+            padding: 20px;
+            margin: 20px 0;
+            background: rgba(0,40,0,0.2);
+            position: relative;
+            line-height: 1.5;
+        }
+        
+        .archimed-message::before {
+            content: 'АРХИМЕД:';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #000;
+            padding: 0 10px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .test-container {
+            border: 1px solid #0f0;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .test-number {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #fff;
+            text-align: center;
+        }
+        
+        .test-image {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            display: block;
+            border: 3px solid #0f0;
+            background: #fff;
+        }
+        
+        .test-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .input-group {
+            margin-top: 25px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0,20,0,0.5);
+            border: 2px solid #0f0;
+            color: #0f0;
+            font-family: inherit;
+            font-size: 1.1em;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            box-shadow: 0 0 15px #0f0;
+        }
+        
+        .hint-btn {
+            background: transparent;
+            border: 1px solid #0f0;
+            color: #0f0;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 15px;
+            margin-right: 10px;
+            transition: all 0.3s;
+        }
+        
+        .hint-btn:hover {
+            background: #0f0;
+            color: #000;
+        }
+        
+        .hint-btn:disabled {
+            border-color: #666;
+            color: #666;
+            cursor: not-allowed;
+        }
+        
+        .hint-btn:disabled:hover {
+            background: transparent;
+            color: #666;
+        }
+        
+        .hint {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border-left: 3px solid;
+            line-height: 1.6;
+        }
+        
+        .hint.visible {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hint-1 {
+            border-color: #0f0;
+            color: #afa;
+            background: rgba(0,40,0,0.3);
+        }
+        
+        .hint-2 {
+            border-color: #ff0;
+            color: #ff0;
+            background: rgba(40,40,0,0.3);
+        }
+        
+        .hint-3 {
+            border-color: #f80;
+            color: #f80;
+            background: rgba(40,20,0,0.3);
+        }
+        
+        .hint-level {
+            font-size: 0.8em;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+        
+        .check-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            margin-top: 25px;
+            background: transparent;
+            border: 3px solid #0f0;
+            color: #0f0;
+            font-family: inherit;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .check-btn:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 30px #0f0;
+        }
+        
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            display: none;
+            line-height: 1.5;
+        }
+        
+        .feedback.correct {
+            display: block;
+            border: 2px solid #0f0;
+            background: rgba(0,40,0,0.3);
+        }
+        
+        .feedback.wrong {
+            display: block;
+            border: 2px solid #f00;
+            color: #f00;
+            background: rgba(40,0,0,0.3);
+        }
+        
+        .next-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            border: 2px solid #0f0;
+            color: #0f0;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin-top: 25px;
+            display: none;
+            transition: all 0.3s;
+        }
+        
+        .next-btn.visible {
+            display: inline-block;
+        }
+        
+        .next-btn:hover {
+            background: #0f0;
+            color: #000;
+        }
+        
+        .progress {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 200;
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            border-radius: 20px;
+        }
+        
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border: 2px solid #0f0;
+            border-radius: 50%;
+        }
+        
+        .progress-dot.active {
+            background: #0f0;
+            box-shadow: 0 0 10px #0f0;
+        }
+        
+        .center {
+            text-align: center;
+        }
+        
+        .hint-counter {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="level-indicator">УРОВЕНЬ 1 ИЗ 5 — ТЕСТ 2 ИЗ 15</div>
+            <h1>ИСПЫТАНИЕ</h1>
+        </div>
+        
+        <div class="archimed-message">
+            Следующий тест. Ищите простое геометрическое различие.
+        </div>
+        
+        <div class="test-container">
+            <div class="test-number">ТЕСТ №6 (Бонгард №6)</div>
+            
+            <div class="test-image">
+                <img src="img/p006.gif" alt="Тест Бонгарда №6">
+            </div>
+            
+            <div class="input-group">
+                <label for="answer">Какое правило разделяет классы?</label>
+                <input type="text" id="answer" placeholder="Ваш ответ..." onkeypress="if(event.key==='Enter') checkAnswer()">
+                
+                <div>
+                    <button class="hint-btn" id="hint-btn-1" onclick="showHint(1)">Подсказка 1</button>
+                    <button class="hint-btn" id="hint-btn-2" onclick="showHint(2)" disabled>Подсказка 2</button>
+                    <button class="hint-btn" id="hint-btn-3" onclick="showHint(3)" disabled>Подсказка 3</button>
+                </div>
+                
+                <div class="hint-counter" id="hint-counter">Использовано подсказок: 0/3</div>
+                
+                <div class="hint hint-1" id="hint-1">
+                    <div class="hint-level">Подсказка 1 из 3 (лаконичная)</div>
+                    Посмотрите на форму фигур. Сколько углов?
+                </div>
+                
+                <div class="hint hint-2" id="hint-2">
+                    <div class="hint-level">Подсказка 2 из 3 (прозрачная)</div>
+                    Посчитайте углы у фигур слева. Потом — у фигур справа. Что общего в каждом классе?
+                </div>
+                
+                <div class="hint hint-3" id="hint-3">
+                    <div class="hint-level">Подсказка 3 из 3 (очевидная)</div>
+                    <strong>Слева:</strong> все фигуры имеют <strong>3 угла</strong> (треугольники).<br>
+                    <strong>Справа:</strong> все фигуры имеют <strong>4 угла</strong> (четырёхугольники).
+                </div>
+            </div>
+            
+            <button class="check-btn" onclick="checkAnswer()">ПРОВЕРИТЬ ОТВЕТ</button>
+            
+            <div class="feedback" id="feedback">
+                <strong>АРХИМЕД:</strong> <span id="feedback-text"></span>
+            </div>
+            
+            <div class="center">
+                <a href="level1-test3.html" class="next-btn" id="next-btn">К СЛЕДУЮЩЕМУ ТЕСТУ →</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="progress">
+        <div class="progress-dot active"></div>
+        <div class="progress-dot active"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+    </div>
+    
+    <script>
+        let hintsUsed = 0;
+        
+        function showHint(level) {
+            document.getElementById('hint-' + level).classList.add('visible');
+            
+            if (level > hintsUsed) {
+                hintsUsed = level;
+                document.getElementById('hint-counter').textContent = 'Использовано подсказок: ' + hintsUsed + '/3';
+            }
+            
+            if (level < 3) {
+                document.getElementById('hint-btn-' + (level + 1)).disabled = false;
+            }
+            
+            document.getElementById('hint-btn-' + level).disabled = true;
+        }
+        
+        function checkAnswer() {
+            const answer = document.getElementById('answer').value.toLowerCase().trim();
+            
+            const correctKeywords = [
+                'треугольник', 'четырёхугольник', 'четырехугольник',
+                '3 угла', '4 угла', 'три угла', 'четыре угла',
+                'число углов', 'количество углов', 'углы',
+                'треугольники', 'четырёхугольники', 'четырехугольники',
+                '3', '4', 'три', 'четыре', 'четырёх',
+                'по углам', 'разное число углов', 'разное количество углов',
+                'триугольник', '4-угольник', '3-угольник'
+            ];
+            
+            const isCorrect = correctKeywords.some(keyword => answer.includes(keyword));
+            
+            if (isCorrect) {
+                let praise = '';
+                if (hintsUsed === 0) {
+                    praise = 'Без подсказок! Отлично.';
+                } else if (hintsUsed === 1) {
+                    praise = 'С одной подсказкой. Хорошо.';
+                } else if (hintsUsed === 2) {
+                    praise = 'С двумя подсказками. Неплохо.';
+                } else {
+                    praise = 'Главное — понять логику!';
+                }
+                
+                document.getElementById('feedback').className = 'feedback correct';
+                document.getElementById('feedback-text').innerHTML = 
+                    'Верно. ' + praise + '<br><br>' +
+                    'Правило: <strong>число углов</strong>.<br><br>' +
+                    'Класс А: <strong>треугольники</strong> (3 угла).<br>' +
+                    'Класс Б: <strong>четырёхугольники</strong> (4 угла).<br><br>' +
+                    'Переход разрешён.';
+                document.getElementById('next-btn').classList.add('visible');
+            } else if (answer.length === 0) {
+                document.getElementById('feedback').className = 'feedback wrong';
+                document.getElementById('feedback-text').textContent = 'Введите ответ.';
+            } else {
+                document.getElementById('feedback').className = 'feedback wrong';
+                document.getElementById('feedback-text').innerHTML = 
+                    'Неверно. Ваш ответ: "' + answer + '"<br><br>' +
+                    'Посмотрите на форму фигур. Сколько углов у фигур слева? А справа?';
+            }
+        }
+    </script>
+</body>
+</html>

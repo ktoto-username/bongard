@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренировка | Операция Бонгард</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+        
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,20,0,0.3) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            padding-bottom: 100px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .level-indicator {
+            font-size: 1.2em;
+            opacity: 0.7;
+            margin-bottom: 10px;
+            color: #ff0;
+        }
+        
+        h1 {
+            font-size: 2em;
+            text-shadow: 0 0 20px #ff0;
+            color: #ff0;
+        }
+        
+        @media (max-width: 600px) { h1 { font-size: 1.5em; } }
+        
+        .training-box {
+            border: 3px solid #ff0;
+            padding: 25px;
+            margin: 20px 0;
+            background: rgba(40,40,0,0.2);
+        }
+        
+        .step {
+            border: 1px solid #0f0;
+            padding: 20px;
+            margin: 20px 0;
+            background: rgba(0,20,0,0.3);
+        }
+        
+        .step-number {
+            color: #fff;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        /* Изображение теста из папки img */
+        .test-image {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            display: block;
+            border: 3px solid #0f0;
+            background: #fff;
+        }
+        
+        .test-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .answer-examples {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .answer-tag {
+            border: 1px solid #0f0;
+            padding: 8px 15px;
+            background: rgba(0,20,0,0.5);
+        }
+        
+        .input-group {
+            margin-top: 25px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0,20,0,0.5);
+            border: 2px solid #ff0;
+            color: #ff0;
+            font-family: inherit;
+            font-size: 1.1em;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            box-shadow: 0 0 15px #ff0;
+        }
+        
+        .hint-btn {
+            background: transparent;
+            border: 1px solid #0f0;
+            color: #0f0;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        
+        .hint-btn:hover {
+            background: #0f0;
+            color: #000;
+        }
+        
+        .hint {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border-left: 3px solid #0f0;
+            background: rgba(0,40,0,0.3);
+            line-height: 1.6;
+        }
+        
+        .hint.visible {
+            display: block;
+        }
+        
+        .check-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            margin-top: 25px;
+            background: transparent;
+            border: 3px solid #ff0;
+            color: #ff0;
+            font-family: inherit;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .check-btn:hover {
+            background: #ff0;
+            color: #000;
+            box-shadow: 0 0 30px #ff0;
+        }
+        
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            display: none;
+            line-height: 1.6;
+        }
+        
+        .feedback.correct {
+            display: block;
+            border: 2px solid #0f0;
+            background: rgba(0,40,0,0.3);
+        }
+        
+        .feedback.wrong {
+            display: block;
+            border: 2px solid #f00;
+            color: #f00;
+            background: rgba(40,0,0,0.3);
+        }
+        
+        .success-box {
+            border: 2px solid #0f0;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+        
+        .success-box.visible {
+            display: block;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            border: 2px solid #0f0;
+            color: #0f0;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin: 20px auto;
+            transition: all 0.3s;
+            background: transparent;
+            font-family: inherit;
+        }
+        
+        .btn:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 20px #0f0;
+        }
+        
+        .center {
+            text-align: center;
+        }
+        
+        .warning {
+            border: 2px solid #f00;
+            color: #f00;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="level-indicator">🔧 ТРЕНИРОВКА</div>
+            <h1>УЧИМСЯ РЕШАТЬ ТЕСТЫ</h1>
+        </div>
+        
+        <div class="training-box">
+            <p style="margin-bottom: 20px; font-size: 1.1em;">Прежде чем начать настоящие испытания, потренируемся на простом примере.</p>
+            
+            <div class="step">
+                <div class="step-number">Шаг 1: Смотрим на примеры</div>
+                <p>Слева 6 фигур, справа 6 фигур. Формы одинаковые — но что-то другое меняется.</p>
+            </div>
+            
+            <!-- ИЗОБРАЖЕНИЕ ТЕСТА №2 ИЗ ПАПКИ img -->
+            <div class="test-image">
+                <img src="img/p002.gif" alt="Тест Бонгарда №2">
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Шаг 2: Ищем различие</div>
+                <p>Возьмём круг слева и круг справа. Они одинаковые? Нет! <strong>Размер</strong> разный!</p>
+                <p>Проверим на всех: слева — все <strong>большие</strong>, справа — все <strong>маленькие</strong>.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Шаг 3: Правило должно быть простым</div>
+                <p>Ответы могут быть разными словами, но смысл один:</p>
+                <div class="answer-examples">
+                    <span class="answer-tag">размер</span>
+                    <span class="answer-tag">величина</span>
+                    <span class="answer-tag">масштаб</span>
+                    <span class="answer-tag">большой-маленький</span>
+                    <span class="answer-tag">габариты</span>
+                </div>
+                <p>Все эти ответы <strong>правильные</strong>! Главное — угадать суть.</p>
+            </div>
+            
+            <div class="warning">
+                ⚠ Правило всегда одно. Простое. Бинарное (да/нет, большой/маленький).<br>
+                Не ищите сложное там, где есть простое!
+            </div>
+            
+            <div class="step">
+                <div class="step-number">Шаг 4: Попробуйте сами!</div>
+                <p>Введите ответ. Постарайтесь быть точным — но не волнуйтесь, если слово другое, главное — смысл!</p>
+            </div>
+            
+            <div class="input-group">
+                <label for="training-answer">Ваш ответ:</label>
+                <input type="text" id="training-answer" placeholder="Напишите правило..." onkeypress="if(event.key==='Enter') checkTraining()">
+                
+                <button class="hint-btn" onclick="showHint()">Подсказка</button>
+                
+                <div class="hint" id="hint">
+                    Сравните одинаковые фигуры слева и справа. Например, круг слева и круг справа. Что изменилось? Не форма, не цвет...
+                </div>
+            </div>
+            
+            <button class="check-btn" onclick="checkTraining()">ПРОВЕРИТЬ ОТВЕТ</button>
+            
+            <div class="feedback" id="feedback">
+                <span id="feedback-text"></span>
+            </div>
+            
+            <div class="success-box" id="success-box">
+                ✅ Отлично! Теперь вы готовы к настоящим тестам.<br><br>
+                Помните: ищите простое правило, не бойтесь ошибаться, главное — логика!
+            </div>
+        </div>
+        
+        <div class="center">
+            <a href="level1-test1.html" class="btn" id="start-btn" style="display:none;">НАЧАТЬ ИСПЫТАНИЕ →</a>
+        </div>
+    </div>
+    
+    <script>
+        function showHint() {
+            document.getElementById('hint').classList.toggle('visible');
+        }
+        
+        function checkTraining() {
+            const answer = document.getElementById('training-answer').value.toLowerCase().trim();
+            
+            const correctKeywords = [
+                'размер', 'величина', 'масштаб', 'габарит', 'размерность',
+                'большой', 'маленький', 'крупный', 'мелкий', 'огромный', 'крошечный',
+                'больше', 'меньше', 'ширина', 'высота', 'диаметр',
+                'габариты', 'крупность', 'мелкость', 'размер фигур'
+            ];
+            
+            const isCorrect = correctKeywords.some(keyword => answer.includes(keyword));
+            
+            if (isCorrect) {
+                document.getElementById('feedback').className = 'feedback correct';
+                document.getElementById('feedback-text').innerHTML = 
+                    '<strong>Правильно!</strong> Правило: <strong>размер</strong> (большой/маленький).<br>' +
+                    'Класс А: все фигуры большие. Класс Б: все фигуры маленькие.';
+                document.getElementById('success-box').classList.add('visible');
+                document.getElementById('start-btn').style.display = 'inline-block';
+            } else if (answer.length === 0) {
+                document.getElementById('feedback').className = 'feedback wrong';
+                document.getElementById('feedback-text').textContent = 'Введите ответ.';
+            } else {
+                document.getElementById('feedback').className = 'feedback wrong';
+                document.getElementById('feedback-text').innerHTML = 
+                    'Пока не угадали. Посмотрите на круг слева и круг справа — чем они отличаются?';
+            }
+        }
+    </script>
+</body>
+</html>
