@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тест 1 | Уровень 1 | Операция Бонгард</title>
+    <title>Тест 1 | Операция Бонгард</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -31,7 +31,7 @@
             margin: 0 auto;
             position: relative;
             z-index: 10;
-            padding-bottom: 100px;
+            padding-bottom: 60px; /* Место для прогресса внизу */
         }
         
         .header {
@@ -39,10 +39,13 @@
             margin-bottom: 30px;
         }
         
-        .level-indicator {
-            font-size: 1.2em;
-            opacity: 0.7;
-            margin-bottom: 10px;
+        .level-badge {
+            display: inline-block;
+            border: 2px solid #0f0;
+            padding: 8px 20px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #afa;
         }
         
         h1 {
@@ -51,6 +54,13 @@
         }
         
         @media (max-width: 600px) { h1 { font-size: 1.5em; } }
+        
+        .test-number {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #fff;
+            text-align: center;
+        }
         
         .archimed-message {
             border: 2px solid #0f0;
@@ -77,13 +87,6 @@
             border: 1px solid #0f0;
             padding: 25px;
             margin: 25px 0;
-        }
-        
-        .test-number {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            color: #fff;
-            text-align: center;
         }
         
         .test-image {
@@ -223,33 +226,41 @@
             color: #000;
         }
         
+        .center {
+            text-align: center;
+        }
+        
+        /* Прогресс внизу страницы, НЕ фиксированный */
+        .progress-container {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #0f0;
+            text-align: center;
+        }
+        
+        .progress-label {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            opacity: 0.7;
+        }
+        
         .progress {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
             display: flex;
-            gap: 10px;
-            z-index: 200;
-            background: rgba(0,0,0,0.8);
-            padding: 10px;
-            border-radius: 20px;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         
         .progress-dot {
-            width: 12px;
-            height: 12px;
-            border: 2px solid #0f0;
+            width: 10px;
+            height: 10px;
+            border: 1px solid #0f0;
             border-radius: 50%;
         }
         
         .progress-dot.active {
             background: #0f0;
-            box-shadow: 0 0 10px #0f0;
-        }
-        
-        .center {
-            text-align: center;
+            box-shadow: 0 0 5px #0f0;
         }
     </style>
 </head>
@@ -258,7 +269,7 @@
     
     <div class="container">
         <div class="header">
-            <div class="level-indicator">УРОВЕНЬ 1 ИЗ 5 — ТЕСТ 1 ИЗ 15</div>
+            <div class="level-badge">СТАРТОВЫЙ УРОВЕНЬ</div>
             <h1>ИСПЫТАНИЕ</h1>
         </div>
         
@@ -267,10 +278,10 @@
         </div>
         
         <div class="test-container">
-            <div class="test-number">ТЕСТ №5 (Бонгард №5)</div>
+            <div class="test-number">ТЕСТ 1</div>
             
             <div class="test-image">
-                <img src="img/p005.gif" alt="Тест Бонгарда №5">
+                <img src="img/p005.gif" alt="Тест 1">
             </div>
             
             <div class="input-group">
@@ -294,14 +305,28 @@
                 <a href="level1-test2.html" class="next-btn" id="next-btn">К СЛЕДУЮЩЕМУ ТЕСТУ →</a>
             </div>
         </div>
-    </div>
-    
-    <div class="progress">
-        <div class="progress-dot active"></div>
-        <div class="progress-dot"></div>
-        <div class="progress-dot"></div>
-        <div class="progress-dot"></div>
-        <div class="progress-dot"></div>
+        
+        <!-- Прогресс внизу, не фиксированный -->
+        <div class="progress-container">
+            <div class="progress-label">Прогресс: тест 1 из 15</div>
+            <div class="progress">
+                <div class="progress-dot active"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+            </div>
+        </div>
     </div>
     
     <script>
