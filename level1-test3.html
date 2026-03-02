@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тест 3 | Уровень 1 | Операция Бонгард</title>
+    <title>Тест 3 | Операция Бонгард</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -31,7 +31,7 @@
             margin: 0 auto;
             position: relative;
             z-index: 10;
-            padding-bottom: 100px;
+            padding-bottom: 60px;
         }
         
         .header {
@@ -39,10 +39,13 @@
             margin-bottom: 30px;
         }
         
-        .level-indicator {
-            font-size: 1.2em;
-            opacity: 0.7;
-            margin-bottom: 10px;
+        .level-badge {
+            display: inline-block;
+            border: 2px solid #0f0;
+            padding: 8px 20px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #afa;
         }
         
         h1 {
@@ -51,6 +54,13 @@
         }
         
         @media (max-width: 600px) { h1 { font-size: 1.5em; } }
+        
+        .test-number {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #fff;
+            text-align: center;
+        }
         
         .archimed-message {
             border: 2px solid #0f0;
@@ -77,13 +87,6 @@
             border: 1px solid #0f0;
             padding: 25px;
             margin: 25px 0;
-        }
-        
-        .test-number {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            color: #fff;
-            text-align: center;
         }
         
         .test-image {
@@ -134,7 +137,6 @@
             cursor: pointer;
             font-family: inherit;
             margin-top: 15px;
-            margin-right: 10px;
             transition: all 0.3s;
         }
         
@@ -143,23 +145,14 @@
             color: #000;
         }
         
-        .hint-btn:disabled {
-            border-color: #666;
-            color: #666;
-            cursor: not-allowed;
-        }
-        
-        .hint-btn:disabled:hover {
-            background: transparent;
-            color: #666;
-        }
-        
         .hint {
             display: none;
             margin-top: 15px;
             padding: 15px;
-            border-left: 3px solid;
-            line-height: 1.6;
+            border-left: 3px solid #ff0;
+            color: #ff0;
+            background: rgba(40,40,0,0.3);
+            line-height: 1.5;
         }
         
         .hint.visible {
@@ -170,30 +163,6 @@
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .hint-1 {
-            border-color: #0f0;
-            color: #afa;
-            background: rgba(0,40,0,0.3);
-        }
-        
-        .hint-2 {
-            border-color: #ff0;
-            color: #ff0;
-            background: rgba(40,40,0,0.3);
-        }
-        
-        .hint-3 {
-            border-color: #f80;
-            color: #f80;
-            background: rgba(40,20,0,0.3);
-        }
-        
-        .hint-level {
-            font-size: 0.8em;
-            opacity: 0.7;
-            margin-bottom: 8px;
         }
         
         .check-btn {
@@ -257,39 +226,40 @@
             color: #000;
         }
         
+        .center {
+            text-align: center;
+        }
+        
+        .progress-container {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #0f0;
+            text-align: center;
+        }
+        
+        .progress-label {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            opacity: 0.7;
+        }
+        
         .progress {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
             display: flex;
-            gap: 10px;
-            z-index: 200;
-            background: rgba(0,0,0,0.8);
-            padding: 10px;
-            border-radius: 20px;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         
         .progress-dot {
-            width: 12px;
-            height: 12px;
-            border: 2px solid #0f0;
+            width: 10px;
+            height: 10px;
+            border: 1px solid #0f0;
             border-radius: 50%;
         }
         
         .progress-dot.active {
             background: #0f0;
-            box-shadow: 0 0 10px #0f0;
-        }
-        
-        .center {
-            text-align: center;
-        }
-        
-        .hint-counter {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 10px;
+            box-shadow: 0 0 5px #0f0;
         }
     </style>
 </head>
@@ -298,7 +268,7 @@
     
     <div class="container">
         <div class="header">
-            <div class="level-indicator">УРОВЕНЬ 1 ИЗ 5 — ТЕСТ 3 ИЗ 15</div>
+            <div class="level-badge">СТАРТОВЫЙ УРОВЕНЬ</div>
             <h1>ИСПЫТАНИЕ</h1>
         </div>
         
@@ -307,38 +277,20 @@
         </div>
         
         <div class="test-container">
-            <div class="test-number">ТЕСТ №7 (Бонгард №7)</div>
+            <div class="test-number">ТЕСТ 3</div>
             
             <div class="test-image">
-                <img src="img/p007.gif" alt="Тест Бонгарда №7">
+                <img src="img/p007.gif" alt="Тест 3">
             </div>
             
             <div class="input-group">
                 <label for="answer">Какое правило разделяет классы?</label>
                 <input type="text" id="answer" placeholder="Ваш ответ..." onkeypress="if(event.key==='Enter') checkAnswer()">
                 
-                <div>
-                    <button class="hint-btn" id="hint-btn-1" onclick="showHint(1)">Подсказка 1</button>
-                    <button class="hint-btn" id="hint-btn-2" onclick="showHint(2)" disabled>Подсказка 2</button>
-                    <button class="hint-btn" id="hint-btn-3" onclick="showHint(3)" disabled>Подсказка 3</button>
-                </div>
+                <button class="hint-btn" onclick="showHint()">Нужна подсказка?</button>
                 
-                <div class="hint-counter" id="hint-counter">Использовано подсказок: 0/3</div>
-                
-                <div class="hint hint-1" id="hint-1">
-                    <div class="hint-level">Подсказка 1 из 3 (лаконичная)</div>
-                    Посмотрите на пропорции. Как вытянуты фигуры?
-                </div>
-                
-                <div class="hint hint-2" id="hint-2">
-                    <div class="hint-level">Подсказка 2 из 3 (прозрачная)</div>
-                    Возьмите линейку (воображаемую). Что шире — фигуры слева или справа? Что выше? В какую сторону они вытянуты?
-                </div>
-                
-                <div class="hint hint-3" id="hint-3">
-                    <div class="hint-level">Подсказка 3 из 3 (очевидная)</div>
-                    <strong>Слева:</strong> фигуры <strong>широкие</strong>, вытянуты по горизонтали.<br>
-                    <strong>Справа:</strong> фигуры <strong>высокие</strong>, вытянуты по вертикали.
+                <div class="hint" id="hint">
+                    Возьмите линейку (воображаемую). Что шире — фигуры слева или справа? Что выше?
                 </div>
             </div>
             
@@ -352,32 +304,32 @@
                 <a href="level1-test4.html" class="next-btn" id="next-btn">К СЛЕДУЮЩЕМУ ТЕСТУ →</a>
             </div>
         </div>
-    </div>
-    
-    <div class="progress">
-        <div class="progress-dot active"></div>
-        <div class="progress-dot active"></div>
-        <div class="progress-dot active"></div>
-        <div class="progress-dot"></div>
-        <div class="progress-dot"></div>
+        
+        <div class="progress-container">
+            <div class="progress-label">Прогресс: тест 3 из 15</div>
+            <div class="progress">
+                <div class="progress-dot active"></div>
+                <div class="progress-dot active"></div>
+                <div class="progress-dot active"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+            </div>
+        </div>
     </div>
     
     <script>
-        let hintsUsed = 0;
-        
-        function showHint(level) {
-            document.getElementById('hint-' + level).classList.add('visible');
-            
-            if (level > hintsUsed) {
-                hintsUsed = level;
-                document.getElementById('hint-counter').textContent = 'Использовано подсказок: ' + hintsUsed + '/3';
-            }
-            
-            if (level < 3) {
-                document.getElementById('hint-btn-' + (level + 1)).disabled = false;
-            }
-            
-            document.getElementById('hint-btn-' + level).disabled = true;
+        function showHint() {
+            document.getElementById('hint').classList.toggle('visible');
         }
         
         function checkAnswer() {
@@ -395,20 +347,9 @@
             const isCorrect = correctKeywords.some(keyword => answer.includes(keyword));
             
             if (isCorrect) {
-                let praise = '';
-                if (hintsUsed === 0) {
-                    praise = 'Без подсказок! Отлично.';
-                } else if (hintsUsed === 1) {
-                    praise = 'С одной подсказкой. Хорошо.';
-                } else if (hintsUsed === 2) {
-                    praise = 'С двумя подсказками. Неплохо.';
-                } else {
-                    praise = 'Главное — понять логику!';
-                }
-                
                 document.getElementById('feedback').className = 'feedback correct';
                 document.getElementById('feedback-text').innerHTML = 
-                    'Верно. ' + praise + '<br><br>' +
+                    'Верно.<br><br>' +
                     'Правило: <strong>ориентация</strong> (горизонтальная / вертикальная).<br><br>' +
                     'Класс А: фигуры <strong>широкие</strong>, вытянуты по горизонтали.<br>' +
                     'Класс Б: фигуры <strong>высокие</strong>, вытянуты по вертикали.<br><br>' +
