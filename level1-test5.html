@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест 5 | Операция Бонгард</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+        
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,20,0,0.3) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            padding-bottom: 60px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .level-badge {
+            display: inline-block;
+            border: 2px solid #0f0;
+            padding: 8px 20px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #afa;
+        }
+        
+        h1 {
+            font-size: 2em;
+            text-shadow: 0 0 20px #0f0;
+        }
+        
+        @media (max-width: 600px) { h1 { font-size: 1.5em; } }
+        
+        .test-number {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #fff;
+            text-align: center;
+        }
+        
+        .archimed-message {
+            border: 2px solid #0f0;
+            padding: 20px;
+            margin: 20px 0;
+            background: rgba(0,40,0,0.2);
+            position: relative;
+            line-height: 1.5;
+        }
+        
+        .archimed-message::before {
+            content: 'АРХИМЕД:';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #000;
+            padding: 0 10px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .test-container {
+            border: 1px solid #0f0;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .test-image {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            display: block;
+            border: 3px solid #0f0;
+            background: #fff;
+        }
+        
+        .test-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .input-group {
+            margin-top: 25px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0,20,0,0.5);
+            border: 2px solid #0f0;
+            color: #0f0;
+            font-family: inherit;
+            font-size: 1.1em;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            box-shadow: 0 0 15px #0f0;
+        }
+        
+        .hint-btn {
+            background: transparent;
+            border: 1px solid #0f0;
+            color: #0f0;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        
+        .hint-btn:hover {
+            background: #0f0;
+            color: #000;
+        }
+        
+        .hint {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border-left: 3px solid #ff0;
+            color: #ff0;
+            background: rgba(40,40,0,0.3);
+            line-height: 1.5;
+        }
+        
+        .hint.visible {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .check-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            margin-top: 25px;
+            background: transparent;
+            border: 3px solid #0f0;
+            color: #0f0;
+            font-family: inherit;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .check-btn:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 30px #0f0;
+        }
+        
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            display: none;
+            line-height: 1.5;
+        }
+        
+        .feedback.correct {
+            display: block;
+            border: 2px solid #0f0;
+            background: rgba(0,40,0,0.3);
+        }
+        
+        .feedback.wrong {
+            display: block;
+            border: 2px solid #f00;
+            color: #f00;
+            background: rgba(40,0,0,0.3);
+        }
+        
+        .next-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            border: 2px solid #0f0;
+            color: #0f0;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin-top: 25px;
+            display: none;
+            transition: all 0.3s;
+        }
+        
+        .next-btn.visible {
+            display: inline-block;
+        }
+        
+        .next-btn:hover {
+            background: #0f0;
+            color: #000;
+        }
+        
+        .center {
+            text-align: center;
+        }
+        
+        .progress-container {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #0f0;
+            text-align: center;
+        }
+        
+        .progress-label {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            opacity: 0.7;
+        }
+        
+        .progress {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border: 1px solid #0f0;
+            border-radius: 50%;
+        }
+        
+        .progress-dot.active {
+            background: #0f0;
+            box-shadow: 0 0 5px #0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="level-badge">СТАРТОВЫЙ УРОВЕНЬ</div>
+            <h1>ИСПЫТАНИЕ</h1>
+        </div>
+        
+        <div class="archimed-message">
+            Следующий тест. Посмотрите на характер линий.
+        </div>
+        
+        <div class="test-container">
+            <div class="test-number">ТЕСТ 5</div>
+            
+            <div class="test-image">
+                <img src="img/p009.gif" alt="Тест 5">
+            </div>
+            
+            <div class="input-group">
+                <label for="answer">Какое правило разделяет классы?</label>
+                <input type="text" id="answer" placeholder="Ваш ответ..." onkeypress="if(event.key==='Enter') checkAnswer()">
+                
+                <button class="hint-btn" onclick="showHint()">Нужна подсказка?</button>
+                
+                <div class="hint" id="hint">
+                    Посмотрите на контур фигур. Слева — ровный, гладкий. Справа — изломанный, зигзагообразный.
+                </div>
+            </div>
+            
+            <button class="check-btn" onclick="checkAnswer()">ПРОВЕРИТЬ ОТВЕТ</button>
+            
+            <div class="feedback" id="feedback">
+                <strong>АРХИМЕД:</strong> <span id="feedback-text"></span>
+            </div>
+            
+            <div class="center">
+                <a href="level1-test6.html" class="next-btn" id="next-btn">К СЛЕДУЮЩЕМУ ТЕСТУ →</a>
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-label">Прогресс: тест 5 из 15</div>
+            <div class="progress">
+                <div class="progress-dot active"></div>
+                <div class="progress-dot active"></div>
+                <div class="progress-dot active"></div>
+                <div class="progress-dot active"></div>
+                <div class="progress-dot active"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+                <div class="progress-dot"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showHint() {
+            document.getElementById('hint').classList.toggle('visible');
+        }
+        
+        function checkAnswer() {
+            const answer = document.getElementById('answer').value.toLowerCase().trim();
+            
+            const correctKeywords = [
+                'плавный', 'ровный', 'гладкий', 'прямой',
+                'шероховатый', 'зигзаг', 'изломанный', 'ломанный',
+                'плавность', 'ровность', 'гладкость', 'шероховатость',
+                'контур', 'линия', 'край', 'форма линии',
+                'прямая линия', 'кривая линия', 'зигзагообразный',
+                'гладкий контур', 'шероховатый контур',
+                'ровный контур', 'изломанный контур'
+            ];
+            
+            const isCorrect = correctKeywords.some(keyword => answer.includes(keyword));
+            
+            if (isCorrect) {
+                document.getElementById('feedback').className = 'feedback correct';
+                document.getElementById('feedback-text').innerHTML = 
+                    'Верно.<br><br>' +
+                    'Правило: <strong>характер контура</strong> (плавный / шероховатый).<br><br>' +
+                    'Класс А: <strong>гладкий</strong> ровный контур.<br>' +
+                    'Класс Б: <strong>шероховатый</strong> зигзагообразный контур.<br><br>' +
+                    'Переход разрешён.';
+                document.getElementById('next-btn').classList.add('visible');
+            } else if (answer.length === 0) {
+                document.getElementById('feedback').className = 'feedback wrong';
+                document.getElementById('feedback-text').textContent = 'Введите ответ.';
+            } else {
+                document.getElementById('feedback').className = 'feedback wrong';
+                document.getElementById('feedback-text').innerHTML = 
+                    'Неверно. Ваш ответ: "' + answer + '"<br><br>' +
+                    'Подсказка: сравните края фигур. Слева — ровные, справа — зигзагом.';
+            }
+        }
+    </script>
+</body>
+</html>

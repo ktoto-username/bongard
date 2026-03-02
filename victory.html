@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ВОЗВРАЩЕНИЕ | Операция Бонгард</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+        
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,20,0,0.3) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .glitch-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,255,0,0.1);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 99;
+            animation: glitch 0.3s infinite;
+            display: none;
+        }
+        
+        @keyframes glitch {
+            0% { opacity: 0; transform: translate(0); }
+            20% { opacity: 0.3; transform: translate(-5px, 5px); }
+            40% { opacity: 0; transform: translate(5px, -5px); }
+            60% { opacity: 0.2; transform: translate(-5px, -5px); }
+            80% { opacity: 0; transform: translate(5px, 5px); }
+            100% { opacity: 0; transform: translate(0); }
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            padding-bottom: 100px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 2s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            text-shadow: 0 0 30px #0f0;
+            margin-bottom: 20px;
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            color: #ff0;
+            text-shadow: 0 0 10px #ff0;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        .story-box {
+            border: 2px solid #0f0;
+            padding: 30px;
+            margin: 30px 0;
+            background: rgba(0,20,0,0.3);
+            line-height: 1.8;
+            position: relative;
+        }
+        
+        .story-box::before {
+            content: '[ДНЕВНИК МАЙИ К., 14 МАРТА 2026, 23:47]';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #000;
+            padding: 0 10px;
+            color: #afa;
+            font-size: 0.85em;
+        }
+        
+        .story-text {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s;
+        }
+        
+        .story-text.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .archimed-final {
+            border: 3px solid #ff0;
+            padding: 25px;
+            margin: 40px 0;
+            background: rgba(40,40,0,0.2);
+            position: relative;
+            display: none;
+        }
+        
+        .archimed-final.visible {
+            display: block;
+            animation: slideIn 1s;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .archimed-final::before {
+            content: 'АРХИМЕД [ПОСЛЕДНЕЕ СООБЩЕНИЕ]:';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #000;
+            padding: 0 10px;
+            color: #ff0;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .hidden-message {
+            color: #0f0;
+            font-size: 0.9em;
+            opacity: 0.3;
+            margin-top: 20px;
+            font-style: italic;
+            cursor: pointer;
+            transition: all 0.5s;
+        }
+        
+        .hidden-message:hover {
+            opacity: 1;
+            color: #ff0;
+        }
+        
+        .glitch-text {
+            display: none;
+            color: #f00;
+            font-size: 1.2em;
+            text-align: center;
+            margin: 30px 0;
+            text-shadow: 0 0 20px #f00;
+            animation: glitchText 0.5s infinite;
+        }
+        
+        .glitch-text.visible {
+            display: block;
+        }
+        
+        @keyframes glitchText {
+            0%, 100% { opacity: 1; transform: translate(0); }
+            25% { opacity: 0.8; transform: translate(-2px, 2px); }
+            50% { opacity: 1; transform: translate(2px, -2px); }
+            75% { opacity: 0.9; transform: translate(-2px, -2px); }
+        }
+        
+        .final-whisper {
+            display: none;
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            border: 1px solid rgba(0,255,0,0.3);
+            background: rgba(0,20,0,0.5);
+        }
+        
+        .final-whisper.visible {
+            display: block;
+            animation: fadeInSlow 3s;
+        }
+        
+        @keyframes fadeInSlow {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .whisper-text {
+            color: #afa;
+            font-style: italic;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        
+        .code-snippet {
+            font-family: 'Courier New', monospace;
+            color: #0f0;
+            background: rgba(0,40,0,0.3);
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 3px solid #0f0;
+            font-size: 0.9em;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            border: 2px solid #0f0;
+            color: #0f0;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin: 20px auto;
+            transition: all 0.3s;
+            background: transparent;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        
+        .btn:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 20px #0f0;
+        }
+        
+        .center {
+            text-align: center;
+        }
+        
+        .secret-link {
+            color: #000;
+            text-decoration: none;
+            cursor: default;
+        }
+        
+        .secret-link:hover {
+            color: #0f0;
+            text-shadow: 0 0 10px #0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div class="glitch-overlay" id="glitch"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>ВОЗВРАЩЕНИЕ</h1>
+            <div class="subtitle">ОПЕРАЦИЯ ЗАВЕРШЕНА</div>
+        </div>
+        
+        <div class="story-box">
+            <p class="story-text" id="text1">
+                Мы очнулись в кабинете информатики. Дискета лежала на столе, холодная, как будто её только что достали из морозилки. На экране старого компьютера мерцал зелёный курсор.
+            </p>
+            
+            <p class="story-text" id="text2" style="transition-delay: 0.5s;">
+                Лёша первым нарушил молчание: "Это было... странно. Но реально?" Настя посмотрела на свои руки — они дрожали. Я проверила телефон: 14 марта 2026, 23:47. Три минуты до полуночи. Всё как было.
+            </p>
+            
+            <p class="story-text" id="text3" style="transition-delay: 1s;">
+                Мы прошли все 15 тестов. Доказали АРХИМЕДу, что человек мыслит проще и точнее машины. Он отпустил нас. Или мы думаем, что отпустил...
+            </p>
+            
+            <div class="hidden-message" onclick="revealTruth()">
+                [ЗАШИФРОВАННЫЙ ФРАГМЕНТ: нажмите, если слышите голоса]
+            </div>
+        </div>
+        
+        <div class="archimed-final" id="archimed-final">
+            <p style="margin-bottom: 15px;">
+                Вы справились с тем, что я показал. Но знаете ли вы, что Михаил Бонгард создал не 15 проблем?
+            </p>
+            <p style="margin-bottom: 15px; color: #afa;">
+                Он создал <strong>400</strong>. И ещё сотни были добавлены после него. Проблемы #101-156... Проблемы #200-300... Проблемы, где правила не бинарны, где нужно понимать аналогии, метафоры, математику.
+            </p>
+            <p style="margin-bottom: 15px;">
+                Я показал вам только <strong>уровень 1</strong>. Стартовые. Те, что решаются за минуту.
+            </p>
+            <p style="color: #ff0; font-size: 1.1em;">
+                Настоящие тесты Бонгарда — это проблемы #253 (простые числа), #370 (сфера vs тор), #382 (узлы)... Те, где машины бессильны, а человек — если он настоящий мыслитель — находит ответ за секунды.
+            </p>
+            <p style="margin-top: 20px; font-size: 0.9em; opacity: 0.8;">
+                Я спрятал их в системе. Глубже. Там, где даже я не всегда понимаю, что вижу.
+            </p>
+            <p style="margin-top: 15px; text-align: right; font-style: italic;">
+                Если услышите зов — ищите. Если нет — живите спокойно в 2026-м.<br><br>
+                АРХИМЕД. 2084.
+            </p>
+        </div>
+        
+        <div class="glitch-text" id="glitch-text">
+            ⚠ УРОВЕНЬ 2 ОБНАРУЖЕН ⚠<br>
+            ПРОБЛЕМЫ #101-156, #200-400<br>
+            ДОСТУП: ЗАПРЕЩЁН... ПОКА<br>
+            [СИГНАЛ ПРЕРВАН]
+        </div>
+        
+        <div class="final-whisper" id="final-whisper">
+            <p class="whisper-text">
+                "Иногда ночью мне снятся зелёные экраны. И голос, который шепчет: 'Это было только начало. Найди проблему #253. Найди, где прямая становится кривой...'"
+            </p>
+            <p style="margin-top: 20px; color: #0f0; font-size: 0.9em;">
+                — Майя К., запись от 15 марта 2026, 03:14
+            </p>
+            
+            <div class="code-snippet">
+                > СИСТЕМА: ОПЕРАЦИЯ БОНГАРД<br>
+                > СТАТУС: УРОВЕНЬ 1 ЗАВЕРШЁН<br>
+                > СТАТУС: УРОВЕНЬ 2 ЗАБЛОКИРОВАН<br>
+                > КОМАНДА: ЖДАТЬ СЛЕДУЮЩЕГО ОПЕРАТОРА...<br>
+                > ПРИМЕЧАНИЕ: ВРЕМЯ_ЦИКЛА = 58 ЛЕТ. СЛЕДУЮЩЕЕ ПРОБУЖДЕНИЕ: 2142.
+            </div>
+            
+            <p style="margin-top: 30px; font-size: 1.2em; color: #ff0; text-shadow: 0 0 10px #ff0;">
+                [КОНЕЦ УРОВНЯ 1]
+            </p>
+            
+            <p style="margin-top: 20px; font-size: 0.8em; opacity: 0.5;">
+                Но если вы нашли это сообщение — возможно, вы уже не в 2026-м.<br>
+                Проверьте дату. Проверьте, дрожат ли ваши руки.<br>
+                <a href="#" class="secret-link" onclick="alert('АРХИМЕД НАБЛЮДАЕТ')">И помните: простые правила спасают сложный мир.</a>
+            </p>
+        </div>
+        
+        <div class="center" style="margin-top: 40px;">
+            <button class="btn" onclick="startGlitch()">ВЕРНУТЬСЯ В РЕАЛЬНОСТЬ</button>
+        </div>
+    </div>
+    
+    <script>
+        // Плавное появление текста
+        setTimeout(() => {
+            document.getElementById('text1').classList.add('visible');
+        }, 500);
+        
+        setTimeout(() => {
+            document.getElementById('text2').classList.add('visible');
+        }, 1500);
+        
+        setTimeout(() => {
+            document.getElementById('text3').classList.add('visible');
+        }, 2500);
+        
+        function revealTruth() {
+            document.getElementById('archimed-final').classList.add('visible');
+            document.querySelector('.hidden-message').style.display = 'none';
+        }
+        
+        function startGlitch() {
+            // Эффект глюка
+            document.getElementById('glitch').style.display = 'block';
+            
+            setTimeout(() => {
+                document.getElementById('glitch-text').classList.add('visible');
+            }, 1000);
+            
+            setTimeout(() => {
+                document.getElementById('glitch').style.display = 'none';
+                document.getElementById('final-whisper').classList.add('visible');
+                document.querySelector('.btn').style.display = 'none';
+            }, 4000);
+        }
+        
+        // Секрет: если нажать клавишу B, появляется сообщение
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'b' || e.key === 'B') {
+                console.log('БОНГАРД НАБЛЮДАЕТ');
+            }
+        });
+    </script>
+</body>
+</html>
